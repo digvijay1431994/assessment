@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+</head>
+<body>
+    
+    <input type="text" id="todoInput" placeholder="Enter your todo">
+    <button id="addTodoBtn">Add Todo</button>
+    <ul id="todoList">
+        <!-- Todo items will be added here -->
+    </ul>
+
+    <script>
+        // Function to add a new todo item
+        function addTodo() {
+            // Get the input value
+            var todoInput = document.getElementById('todoInput');
+            var todoText = todoInput.value;
+
+            if (todoText.trim() === '') {
+                // If input is empty, don't add todo
+                alert('Please enter a todo!');
+                return;
+            }
+
+            // Create a new list item
+            var li = document.createElement('li');
+            li.textContent = todoText;
+
+            // Add the new todo item to the list
+            var todoList = document.getElementById('todoList');
+            todoList.appendChild(li);
+
+            // Store the todo list in cookies
+            storeTodoListInCookies();
+
+            // Clear the input field after adding todo
+            todoInput.value = '';
+        }
+
+        // Function to store the todo list in cookies
+        function storeTodoListInCookies() {
+            var todoList = document.getElementById('todoList').innerHTML;
+            // Store the todo list in a cookie named 'todos'
+            document.cookie = 'todos=' + encodeURIComponent(todoList) + '; path=/';
+        }
+
+        // Function to load todo list from cookies
+        function loadTodoListFromCookies() {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.startsWith('todos=')) {
+                    var todoList = decodeURIComponent(cookie.substring('todos='.length));
+                    // Set the todo list in the HTML
+                    document.getElementById('todoList').innerHTML = todoList;
+                    break;
+                }
+            }
+        }
+
+        // Add event listener to the button for adding todo
+        document.getElementById('addTodoBtn').addEventListener('click', addTodo);
+
+        // Load todo list from cookies when the page loads
+        window.addEventListener('load', loadTodoListFromCookies);
+    </script>
+</body>
+</html>
